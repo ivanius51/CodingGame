@@ -25,25 +25,24 @@ int main()
 
   cerr << binary << endl;
 
-  string answer = "";
   for (int i = 0; i < binary.length(); ++i)
   {
     if (binary[i] == '0')
     {
-      answer += "00 ";
+      cout << "00 ";
     }
     else
     {
-      answer += "0 ";
+      cout << "0 ";
     }
     char current = binary[i];
     while (current == binary[i] && i++ < binary.length())
     {
-      answer += "0";
+      cout << "0";
     }
     if (i < binary.length())
     {
-      answer += " ";
+      cout << " ";
       --i;
     }
   }
@@ -51,5 +50,5 @@ int main()
   // Write an action using cout. DON'T FORGET THE "<< endl"
   // To debug: cerr << "Debug messages..." << endl;
 
-  cout << answer << endl;
+  cout << endl;
 }
