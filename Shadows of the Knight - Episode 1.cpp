@@ -51,6 +51,8 @@ int main()
 
   int X = X0;
   int Y = Y0;
+  X0 = 0;
+  Y0 = 0;
   W = MaxW - 1;
   H = MaxH - 1;
   std::cerr << W << "," << H << std::endl;
@@ -67,7 +69,18 @@ int main()
     int VDir = getVerticalDirrection(bombDir);
 
     std::cerr << bombDir << " " << HDir << "," << VDir << std::endl;
-                                              
+     
+    if (HDir < 0)
+      W = X - 1;
+    else
+      X0 = X + 1;
+
+    if (VDir < 0)
+      H = Y - 1;
+    else
+      Y0 = Y + 1;
+
+    /*
     if (oldHDir == MaxW)
     {
       if (HDir > 0)
@@ -95,6 +108,7 @@ int main()
       if (W == 0)
         W = VDir;
     }
+    
 
     if (oldVDir == MaxH)
     {
@@ -124,13 +138,14 @@ int main()
         H = VDir;
     }
 
-    Y0 = Y;
-    X0 = X;
+    //Y0 = Y;
+    //X0 = X;
 
     //int X = X0 + ((W - X0) * HDir) / 2;
+    */
     if (HDir != 0)
     {   
-      X = X0 + std::ceil(W * 0.5f) * HDir;
+      X = X0 + (W - X0) / 2;
     }
 
     std::cout << X;
@@ -138,7 +153,7 @@ int main()
 
     if (VDir != 0)
     {
-      Y = Y0 + std::ceil(H * 0.5f) * VDir;
+      Y = Y0 + (H - Y0) / 2;
     }
 
     std::cout << Y;
@@ -146,8 +161,8 @@ int main()
 
     std::cerr << W << "," << H << std::endl;
 
-    oldHDir = HDir;
-    oldVDir = VDir;
+    //oldHDir = HDir;
+    //oldVDir = VDir;
     
     // Write an action using cout. DON'T FORGET THE "<< endl"
     // To debug: cerr << "Debug messages..." << endl;
