@@ -46,7 +46,7 @@ int main()
       //double b1 = (x2 * y1 - x1 * y2) / (x2 - x1);
       //y = kx + b;
       //x = (y - b) / k;
-
+      /*
       int dx = (X - X0);
       int dy = (Y - Y0);
 
@@ -75,13 +75,7 @@ int main()
       }
       std::cerr << std::endl;
 
-      //float angle = std::atan2(dy, dx);// +1.57);
-      //dy = std::ceil(Y0 + (dy*std::cos(3.14 - angle)));
-      //dx = std::ceil(X0 + (dx*std::cos(3.14 - angle)));
-      //std::cerr << angle << std::endl;
-      //std::cerr << X + dx << ", " << Y + dy << std::endl;
-
-      /*
+      
       if (H > W)
       {
         Y = std::ceil(H - ((H - (k2 * X + b2)) / 2));
@@ -100,6 +94,7 @@ int main()
     }
     else if (bombDir == "COLDER")
     {
+      /*
       int dx = (X - X0);
       int dy = (Y - Y0);
 
@@ -124,7 +119,7 @@ int main()
         std::cerr << "y" << i << "=" << std::ceil(k2 * i + b2);
       }
       std::cerr << std::endl;
-
+      */
       X = X0;
       Y = Y0;
     }
