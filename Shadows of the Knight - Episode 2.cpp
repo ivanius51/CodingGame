@@ -198,11 +198,11 @@ int main()
       {
         X0 = X;
         Y0 = Y;
-        X = (minX + (maxX - minX) / 2) - (1 * (X <= minX ? 1 : (X <= maxX ? -1 : 1)));
+        X = (minX + (maxX - minX) / 2) - ((maxY - minY) / 4 * (X <= minX ? 1 : (X <= maxX ? -1 : 1)));
         if (X <= X0)
         {
           std::cerr << "same X" << std::endl;
-          X = std::max((minX + (maxX - minX) / 2) - (1 * (X <= minX ? 1 : (X <= maxX ? 1 : -1))), minX); //std::max(X - 2, minX);
+          X = std::max((minX + (maxX - minX) / 2) - ((maxX - minX) / 4 * (X <= minX ? 1 : (X <= maxX ? 1 : -1))), minX); //std::max(X - 2, minX);
           if (X == X0)
           {
             X = std::min(X + 1, maxX);
@@ -213,11 +213,11 @@ int main()
       {
         X0 = X;
         Y0 = Y;
-        Y = (minY + (maxY - minY) / 2) - (1 * (Y <= minY ? 1 : (Y <= maxY ? -1 : 1)));
+        Y = (minY + (maxY - minY) / 2) - ((maxY - minY) / 4 * (Y <= minY ? 1 : (Y <= maxY ? -1 : 1)));
         if (Y <= Y0)
         {
           std::cerr << "same Y" << std::endl;
-          Y = std::max((minY + (maxY - minY) / 2) - (1 * (Y <= minY ? 1 : (Y <= maxY ? 1 : -1))), minY); //std::max(Y - 2, minY);
+          Y = std::max((minY + (maxY - minY) / 2) - ((maxY - minY) / 4 * (Y <= minY ? 1 : (Y <= maxY ? 1 : -1))), minY); //std::max(Y - 2, minY);
           if (Y == Y0)
           {
             Y = std::min(Y + 1, maxY);
