@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <math.h>
 
+template <typename T> int sign(T value)
+{
+  return (value > 0) ? 1 : ((value < 0) ? -1 : 0);
+};
+
 /**
  * Auto-generated code below aims at helping you parse
  * the standard input according to the problem statement.
@@ -15,13 +20,15 @@ int main()
   std::cin >> W >> H; std::cin.ignore();
   int N; // maximum number of turns before game over.
   std::cin >> N; std::cin.ignore();
-  int X0;
-  int Y0;
-  int X;
-  int Y;
+  int X0, Y0, X, Y;
   std::cin >> X0 >> Y0; std::cin.ignore();
 
+  int minX = 0;
+  int minY = 0;
+  int maxX = W - 1;
+  int maxY = H - 1;
 
+  //std::vector<>
 
   // game loop
   while (1)
@@ -33,100 +40,235 @@ int main()
 
     if (bombDir == "UNKNOWN")
     {
-      X = W / 2;
-      Y = H / 2;
-    }
-    else if (bombDir == "WARMER")
-    {
-      //(x - x1)/(x2 - x1) = (y - y1)/(y2 - y1) ->  (y2 - y1)X + (x2 - x1)Y + (x1 * y2 - x2 * y1) -> Ax + By + C = 0;
-      //y = kx + b;
-      //{y1 = kx1 + b
-      //{y2 = kx2 + b
-      //double k1 = (y2 - y1) / (x2 - x1);
-      //double b1 = (x2 * y1 - x1 * y2) / (x2 - x1);
-      //y = kx + b;
-      //x = (y - b) / k;
-      /*
-      int dx = (X - X0);
-      int dy = (Y - Y0);
+      int dx = (W - X0);
+      int dy = (H - Y0);
 
-      float midY = Y0 + dy;
-      float midX = X0 + dx;
+      std::cerr << W << " " << H << std::endl;
 
-      int x1 = X0;
-      int y1 = Y0;
-      int x2 = X;
-      int y2 = Y;
-
-      double k1 = (y2 - y1) / (x2 - x1);
-      double b1 = (x2 * y1 - x1 * y2) / (x2 - x1);
-
-      double k2 = -1 / k1;
-      double b2 = y2 + k2 * x2;
-
-      
-      for (int i = 0; i < W; ++i)
+      X = X0;
+      Y = Y0;
+      if (W == H)
       {
-        if (i != 0)
-        {
-          std::cerr << ", ";
-        }
-        std::cerr << "y" << i << "=" << std::ceil(k2 * i + b2);
+        if (dx > dy)
+          X = W / 2;
+        else
+          Y = H / 2;
       }
-      std::cerr << std::endl;
-
-      
-      if (H > W)
+      else if (W > H)
       {
-        Y = std::ceil(H - ((H - (k2 * X + b2)) / 2));
+        X = W / 2;
       }
       else
       {
-        X = std::ceil((Y - b2) / k2);
+        Y = H / 2;
       }
-      */
-      X0 = X;
-      Y0 = Y;
-
-      X = X + dx;
-      Y = Y + dy;
-      //X0 
+      //std::cout << X << " " << Y << std::endl;
     }
-    else if (bombDir == "COLDER")
+    else if (bombDir == "WARMER")
     {
-      /*
       int dx = (X - X0);
       int dy = (Y - Y0);
 
-      int x1 = X0;
-      int y1 = Y0;
-      int x2 = X;
-      int y2 = Y;
-
-      double k1 = (y2 - y1) / (x2 - x1);
-      double b1 = (x2 * y1 - x1 * y2) / (x2 - x1);
-
-      double k2 = -1 / k1;
-      double b2 = y2 + k2 * x2;
-
-
-      for (int i = 0; i < W; ++i)
+      if (dx != 0)
       {
-        if (i != 0)
+        if (dx > 0)
         {
-          std::cerr << ", ";
+          minX = std::max(X - ((dx - 1) / 2), minX);
         }
-        std::cerr << "y" << i << "=" << std::ceil(k2 * i + b2);
+        else
+        {
+          maxX = std::min(X - ((dx + 1) / 2), maxX);
+        }
       }
-      std::cerr << std::endl;
-      */
-      X = X0;
-      Y = Y0;
+      if (dy != 0)
+      {
+        if (dy > 0)
+        {
+          minY = std::max(Y - ((dy - 1) / 2), minY);
+        }
+        else
+        {
+          maxY = std::min(Y - ((dy + 1) / 2), maxY);
+        }
+      }
+
+      std::cerr << dx << " " << dy << std::endl;
+
+      X0 = X;
+      Y0 = Y;
+
+      if (minY == maxY || minX == maxX)
+      {
+        std::cerr << "same" << std::endl;
+        if (minX == maxX)
+        {
+          X = minX;
+          Y = (minY + (maxY - minY) / 2) + 1;
+          if (Y == Y0)
+            Y = std::max(Y - 2, minY);
+        }
+        if (minY == maxY)
+        {
+          Y = minY;
+          X = (minX + (maxX - minX) / 2) + 1;
+          if (X == X0)
+            X = std::max(X - 2, minX);
+        }
+      }
+      else if ((maxX - minX) >  (maxY - minY))
+      {
+        {
+          X = (minX + (maxX - minX) / 2) + (1 * (X < minX ? 1 :(X <= maxX ? 1 : -1)));
+        }
+        if (X <= X0)
+        {
+          std::cerr << "same X" << std::endl;
+          X = std::max((minX + (maxX - minX) / 2) + (1 * (X < minX ? 1 : (X <= maxX ? -1 : 1))), minX);
+          if (X == X0)
+          {
+            X = std::min(X + 1, maxX);
+          }
+        }
+      }
+      else
+      {
+        {
+          Y = (minY + (maxY - minY) / 2) + (1 * (Y < minY ? 1 : (Y <= maxY ? 1 : -1)));
+        }
+        if (Y <= Y0)
+        {
+          std::cerr << "same Y" << std::endl;
+          Y = std::max((minY + (maxY - minY) / 2) + (1 * (Y < minY ? 1 : (Y <= maxY ? -1 : 1))), minY);
+          if (Y == Y0)
+          {
+            std::cerr << "same Y" << std::endl;
+            Y = std::min(Y + 1, maxY);
+          }
+        }
+      }
+    }
+    else if (bombDir == "COLDER")
+    {
+      int dx = (X - X0);
+      int dy = (Y - Y0);
+
+      std::cerr << dx << " " << dy << std::endl;
+
+      if (dx != 0)
+      {
+        if (dx < 0)
+        {
+          minX = std::max(X - ((dx - 1) / 2), minX);
+        }
+        else
+        {
+          maxX = std::min(X - ((dx + 1) / 2), maxX);
+        }
+      }
+      if (dy != 0)
+      {
+        if (dy < 0)
+        {
+          minY = std::max(Y - ((dy - 1) / 2), minY);
+        }
+        else
+        {
+          maxY = std::min(Y - ((dy + 1) / 2), maxY);
+        }
+      }
+
+      if (minY == maxY || minX == maxX)
+      {
+        std::cerr << "same" << std::endl;
+        if (minX == maxX)
+        {
+          X = minX;
+        }
+        else
+          X = (minX + (maxX - minX) / 2) + 1;
+
+        if (minY == maxY)
+        {
+          Y = minY;
+        }
+        else
+          Y = (minY + (maxY - minY) / 2) + 1;
+      }
+      else if (dx > dy)
+      {
+        X0 = X;
+        Y0 = Y;
+        X = (minX + (maxX - minX) / 2) - (1 * (X <= minX ? 1 : (X <= maxX ? -1 : 1)));
+        if (X <= X0)
+        {
+          std::cerr << "same X" << std::endl;
+          X = std::max((minX + (maxX - minX) / 2) - (1 * (X <= minX ? 1 : (X <= maxX ? 1 : -1))), minX); //std::max(X - 2, minX);
+          if (X == X0)
+          {
+            X = std::min(X + 1, maxX);
+          }
+        }
+      }
+      else
+      {
+        X0 = X;
+        Y0 = Y;
+        Y = (minY + (maxY - minY) / 2) - (1 * (Y <= minY ? 1 : (Y <= maxY ? -1 : 1)));
+        if (Y <= Y0)
+        {
+          std::cerr << "same Y" << std::endl;
+          Y = std::max((minY + (maxY - minY) / 2) - (1 * (Y <= minY ? 1 : (Y <= maxY ? 1 : -1))), minY); //std::max(Y - 2, minY);
+          if (Y == Y0)
+          {
+            Y = std::min(Y + 1, maxY);
+          }
+        }
+      }
     }
     else//SAME 
     {
+      int dx = (X - X0);
+      int dy = (Y - Y0);
 
+      std::cerr << dx << " " << dy << std::endl;
+
+      if (dx != 0)
+      {
+        minX = X0 + (dx / 2);
+        maxX = X - (dx / 2);
+      }
+      if (dy != 0)
+      {
+        minY = Y0 + (dy / 2);
+        maxY = Y - (dy / 2);
+      }
+
+      X0 = X;
+      Y0 = Y;
+      if (minY == maxY || minX == maxX)
+      {
+        std::cerr << "SAME same" << std::endl;
+        if (minX == maxX)
+        {
+          X = minX;
+        }
+        else
+          X = (minX + (maxX - minX) / 2) + 1;
+        if (minY == maxY)
+        {
+          Y = minY;
+        }
+        else
+          Y = (minY + (maxY - minY) / 2) + 1;
+      }
+      else if (dx > dy)
+        Y = minY + (maxY - minY) / 2;
+      else
+        X = minX + (maxX - minX) / 2;
     }
+
+    std::cerr << minX << "," << minY << " " << maxX << "," << maxY << std::endl;
+
     std::cout << X << " " << Y << std::endl;
   }
 }
