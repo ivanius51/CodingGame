@@ -5,9 +5,9 @@
 
 using namespace std;
 
-char randMove(int random = 0)
+char randMove(int seed = 0)
 {
-  srand(random % 10 + rand());
+  srand(seed % 10 + rand());
   switch (rand() % 3)
   {
   case (0):
@@ -46,11 +46,13 @@ int isWin(char tryWin, char opponent)
 
 int main()
 {
-  char lastmove;
+  char opponentPrevMove;
+  char myLastMove = 0;
   char myMove = randMove();
   bool tryCounter = false;
   int sucessCounter = 0;
   int oldSucessCounter = 0;
+  int streak = 0;
   int i = 0;
   // game loop
   while (1)
@@ -63,33 +65,50 @@ int main()
       oldSucessCounter = sucessCounter;
       sucessCounter += isWin(myMove, opponentLastMove);
     }
-    myMove = randMove(i);
+    if (isWin(myMove, opponentLastMove))
+    {
+      streak++;
+    }
+    else
+    {
+      streak = 0;
+    }
+
+    myMove = 0;
     if (i >= 1)
-    {  
-      if (i > 1 && lastmove == opponentLastMove)
+    {
+      if (i > 1 && opponentPrevMove == opponentLastMove)
       {
-        if (sucessCounter>=-5)
+        if (sucessCounter >= -3)
         {
-          myMove = counter(lastmove);   
+          myMove = counter(opponentPrevMove);
           tryCounter = true;
         }
         else
         {
           if (oldSucessCounter > sucessCounter && (i % 2 == 0))
-            myMove = counter(counter(lastmove));
+            myMove = counter(randMove(i));
           else
-            myMove = lastmove;
+            myMove = counter(myLastMove);
           tryCounter = true;
         }
       }
       else
       {
         tryCounter = false;
-        //myMove = counter(opponentLastMove);
+        myMove = (myLastMove);
       }
-      lastmove = opponentLastMove;
+      opponentPrevMove = opponentLastMove;
+    }  
+    if (myMove == 0)
+    {
+      myMove = randMove(i);
     }
-    cerr << tryCounter << " " <<  sucessCounter << endl;
+    else
+    {
+      myLastMove = myMove;
+    }
+    cerr << "streak=" << streak << " tryCounter=" << tryCounter << " sucessCounter=" << sucessCounter << endl;
     cout << myMove << endl;
     i++;
   }
