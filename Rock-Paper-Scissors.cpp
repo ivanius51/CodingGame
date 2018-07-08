@@ -47,7 +47,6 @@ int isWin(char tryWin, char opponent)
 int main()
 {
   char opponentPrevMove;
-  char myLastMove = 0;
   char myMove = randMove();
   bool tryCounter = false;
   int sucessCounter = 0;
@@ -89,24 +88,20 @@ int main()
           if (oldSucessCounter > sucessCounter && (i % 2 == 0))
             myMove = counter(randMove(i));
           else
-            myMove = counter(myLastMove);
+            myMove = myMove;
           tryCounter = true;
         }
       }
       else
       {
         tryCounter = false;
-        myMove = (myLastMove);
+        //myMove = counter(opponentLastMove);
       }
       opponentPrevMove = opponentLastMove;
     }  
     if (myMove == 0)
     {
       myMove = randMove(i);
-    }
-    else
-    {
-      myLastMove = myMove;
     }
     cerr << "streak=" << streak << " tryCounter=" << tryCounter << " sucessCounter=" << sucessCounter << endl;
     cout << myMove << endl;
