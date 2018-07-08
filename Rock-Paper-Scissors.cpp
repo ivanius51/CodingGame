@@ -47,6 +47,7 @@ int isWin(char tryWin, char opponent)
 int main()
 {
   char opponentPrevMove;
+  char myLastMove = 0;
   char myMove = randMove();
   bool tryCounter = false;
   int sucessCounter = 0;
@@ -58,13 +59,14 @@ int main()
   {
     char opponentLastMove;
     cin >> opponentLastMove; cin.ignore();
+    myLastMove = myMove;
 
     if (tryCounter)
     {
       oldSucessCounter = sucessCounter;
-      sucessCounter += isWin(myMove, opponentLastMove);
+      sucessCounter += isWin(myLastMove, opponentLastMove);
     }
-    if (isWin(myMove, opponentLastMove))
+    if (isWin(myLastMove, opponentLastMove))
     {
       streak++;
     }
@@ -72,7 +74,7 @@ int main()
     {
       streak = 0;
     }
-
+    
     myMove = 0;
     if (i >= 1)
     {
@@ -86,16 +88,27 @@ int main()
         else
         {
           if (oldSucessCounter > sucessCounter && (i % 2 == 0))
+          {
             myMove = counter(randMove(i));
+          }
           else
-            myMove = myMove;
+          {
+            myMove = counter(myLastMove);
+          }
           tryCounter = true;
         }
       }
       else
       {
         tryCounter = false;
-        //myMove = counter(opponentLastMove);
+        if (streak < 2)
+        {
+          myMove = myLastMove;
+        }
+        else 
+        {
+          myMove = counter(counter(myLastMove));
+        }
       }
       opponentPrevMove = opponentLastMove;
     }  
