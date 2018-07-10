@@ -2,12 +2,26 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <ctime>
+#include <math.h>
 
 using namespace std;
 
+namespace constants
+{
+  const int basic = 1;
+  const int randomCounterCalculation = 2;
+  const int counterDouble = 4;
+}
+
+bool hasBehavior(size_t container, size_t behavior)
+{
+  return container & behavior ~= 0;
+}
+
 char randMove(int seed = 0)
 {
-  srand(seed % 10 + rand());
+  srand(time(NULL) + seed);
   switch (rand() % 3)
   {
   case (0):
@@ -53,7 +67,12 @@ int main()
   int sucessCounter = 0;
   int oldSucessCounter = 0;
   int streak = 0;
-  int i = 0;
+  int enemyStreak = 0;
+  int enemyScore = 0;
+  size_t i = rand() + 11;
+
+  size_t strategy = constants::basic | constants::counterDouble;
+
   // game loop
   while (1)
   {
@@ -61,25 +80,60 @@ int main()
     cin >> opponentLastMove; cin.ignore();
     myLastMove = myMove;
 
-    if (tryCounter)
-    {
-      oldSucessCounter = sucessCounter;
-      sucessCounter += isWin(myLastMove, opponentLastMove);
-    }
-    if (isWin(myLastMove, opponentLastMove))
-    {
-      streak++;
-    }
-    else
-    {
-      streak = 0;
-    }
-    
     myMove = 0;
     if (i >= 1)
     {
-      if (i > 1 && opponentPrevMove == opponentLastMove)
+      if (tryCounter)
       {
+        oldSucessCounter = sucessCounter;
+        sucessCounter += isWin(myLastMove, opponentLastMove);
+      }
+
+      //calc scores
+      int lastTurnResult = isWin(myLastMove, opponentLastMove);
+      if (lastTurnResult == 1)
+      {
+        streak++;
+        enemyStreak = 0;
+      }
+      else if (lastTurnResult == -1)
+      {
+        enemyStreak++;
+        streak = 0;
+        enemyScore += min(enemyStreak, 5);
+      }
+      else
+      {
+        streak = 0;
+        enemyStreak = 0;
+      }
+
+      tryCounter = false;
+
+      //stategies change condition
+      if (enemyStreak > 3)
+      {
+        strategy = strategy | constants::randomCounterCalculation;
+      }
+      else if (sucessCounter < -3)
+      {
+        strategy = strategy & !constants::counterDouble;
+      }
+      else if (sucessCounter >= -3)
+      {
+
+      }
+
+      //stategies
+      if ((enemyStreak >= 1) && hasBehavior(strategy, constants::randomCounterCalculation))
+      {
+        myMove = randMove(i);
+        cerr << "random ";
+      }
+      else if ((i > 1) && opponentPrevMove == opponentLastMove)
+      {
+        enemyScore += 2;
+
         if (sucessCounter >= -3)
         {
           myMove = counter(opponentPrevMove);
@@ -94,29 +148,28 @@ int main()
           else
           {
             myMove = counter(myLastMove);
+            tryCounter = true;
           }
-          tryCounter = true;
         }
       }
       else
       {
-        tryCounter = false;
         if (streak < 2)
         {
-          myMove = myLastMove;
+          //myMove = myLastMove;
         }
-        else 
+        else
         {
-          myMove = counter(counter(myLastMove));
+          //myMove = counter(counter(myLastMove));
         }
       }
       opponentPrevMove = opponentLastMove;
-    }  
+    }
     if (myMove == 0)
     {
       myMove = randMove(i);
     }
-    cerr << "streak=" << streak << " tryCounter=" << tryCounter << " sucessCounter=" << sucessCounter << endl;
+    cerr << "enemyStreak=" << enemyStreak << " enemyScore=" << enemyScore << " tryCounter=" << tryCounter << " sucessCounter=" << sucessCounter << endl;
     cout << myMove << endl;
     i++;
   }
